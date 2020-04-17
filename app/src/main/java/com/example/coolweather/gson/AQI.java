@@ -8,7 +8,7 @@ public class AQI {
 
     public class AQICity{
 
-        @SerializedName("api")
+        @SerializedName("aqi")
         public String aqi;
 
         @SerializedName("pm25")

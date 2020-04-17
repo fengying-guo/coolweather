@@ -43,7 +43,7 @@ public class ChooseAreaFragment extends Fragment {
 
     private static final int LEVEL_CITY = 1;
 
-    private static final int LEVEL_COUNTY = 1;
+    private static final int LEVEL_COUNTY = 2;
 
     private ProgressBar progressBar;
 
@@ -74,30 +74,20 @@ public class ChooseAreaFragment extends Fragment {
     //当前选中的级别
     private int currentLevel;
 
-    public ChooseAreaFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.choose_area, container, false);
-        titleText = view.findViewById(R.id.title_text);
-        backButton = view.findViewById(R.id.back_button);
-        listView = view.findViewById(R.id.list_view);
+        titleText = (TextView) view.findViewById(R.id.title_text);
+        backButton = (Button) view.findViewById(R.id.back_button);
+        listView = (ListView) view.findViewById(R.id.list_view);
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
         listView.setAdapter(adapter);
         return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -183,7 +173,7 @@ public class ChooseAreaFragment extends Fragment {
         if (countyList.size() > 0) {
             dataList.clear();
             for (County county : countyList) {
-                dataList.add(county.getCountyName());
+                    dataList.add(county.getCountyName());
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
@@ -192,7 +182,6 @@ public class ChooseAreaFragment extends Fragment {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
             String address = "http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
-            Log.d("guofy", "queryCounty: address=="+address);
             queryFromServer(address, "county");
         }
     }
@@ -202,14 +191,14 @@ public class ChooseAreaFragment extends Fragment {
      * */
 
     private void queryFromServer(String address, final String type) {
-        showProgressBar();
+//        showProgressBar();
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        closeProgressBar();
+//                        closeProgressBar();
                         Toast.makeText(getContext(),"加载失败", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -226,9 +215,7 @@ public class ChooseAreaFragment extends Fragment {
                     result = Utility.handleCityResponse(responseText, selectedProvince.getId());
                 } else if ("county".equals(type)) {
                     result = Utility.handleCountyResponse(responseText, selectedCity.getId());
-                    Log.d("guofy", "onResponse: county result=="+result+responseText);
                 }
-                Log.d("guofy", "onResponse: result=---"+result);
                 if (result) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -237,7 +224,7 @@ public class ChooseAreaFragment extends Fragment {
                                 queryProvinces();
                             } else if ("city".equals(type)) {
                                 queryCities();
-                            }else if ("county".equals(type)) {
+                            } else if ("county".equals(type)) {
                                 queryCounty();
                             }
                         }
@@ -247,17 +234,17 @@ public class ChooseAreaFragment extends Fragment {
         });
     }
 
-    private void showProgressBar() {
-        if (progressBar == null) {
-            progressBar = new ProgressBar(getActivity());
-        }
-        progressBar.setVisibility(View.VISIBLE);
-    }
+//    private void showProgressBar() {
+//        if (progressBar == null) {
+//            progressBar = new ProgressBar(getActivity());
+//        }
+//        progressBar.setVisibility(View.VISIBLE);
+//    }
 
-    private void closeProgressBar() {
-        if (progressBar != null) {
-            progressBar.setVisibility(View.GONE);
-        }
-    }
+//    private void closeProgressBar() {
+//        if (progressBar != null) {
+//            progressBar.setVisibility(View.GONE);
+//        }
+//    }
 
 }

@@ -3,6 +3,7 @@ package com.example.coolweather;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -95,6 +96,7 @@ public class WeatherActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
                 final Weather weather = Utility.handleWeatherResponse(responseText);
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -123,17 +125,19 @@ public class WeatherActivity extends AppCompatActivity {
         degreeText.setText(degree);
         weatherInfoText.setText(weatherInfo);
         forecastLayout.removeAllViews();
-        for (Forecase forecase : weather.forecaseList) {
-            View view = LayoutInflater.from(this).inflate(R.layout.forecast_item, forecastLayout,false);
-            TextView dateTime = view.findViewById(R.id.data_text);
-            TextView infoText = view.findViewById(R.id.info_text);
-            TextView maxText = view.findViewById(R.id.max_text);
-            TextView minText = view.findViewById(R.id.min_text);
-            dateTime.setText(forecase.date);
-            infoText.setText(forecase.more.info);
-            maxText.setText(forecase.temperature.max);
-            minText.setText(forecase.temperature.min);
-            forecastLayout.addView(view);
+        if (weather.forecastList != null) {
+            for (Forecase forecase : weather.forecastList) {
+                View view = LayoutInflater.from(this).inflate(R.layout.forecast_item, forecastLayout, false);
+                TextView dateTime = view.findViewById(R.id.data_text);
+                TextView infoText = view.findViewById(R.id.info_text);
+                TextView maxText = view.findViewById(R.id.max_text);
+                TextView minText = view.findViewById(R.id.min_text);
+                dateTime.setText(forecase.date);
+                infoText.setText(forecase.more.info);
+                maxText.setText(forecase.temperature.max);
+                minText.setText(forecase.temperature.min);
+                forecastLayout.addView(view);
+            }
         }
 
         if (weather.aqi != null) {
